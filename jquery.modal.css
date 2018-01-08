@@ -42,7 +42,9 @@
   box-shadow: 0 0 10px #000;
   text-align: left;
 }
-
+.modal.modal-visible {
+  display: inline-block;
+}
 .modal a.close-modal {
   position: absolute;
   top: -12.5px;

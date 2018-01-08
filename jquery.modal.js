@@ -142,11 +142,9 @@
         this.closeButton = $('<a href="#close-modal" rel="modal:close" class="close-modal ' + this.options.closeClass + '">' + this.options.closeText + '</a>');
         this.$elm.append(this.closeButton);
       }
-      this.$elm.addClass(this.options.modalClass).appendTo(this.$blocker);
+      this.$elm.addClass(this.options.modalClass).addClass(this.options.modalClass + '-visible').appendTo(this.$blocker);
       if(this.options.doFade) {
-        this.$elm.css({opacity: 0, display: 'inline-block'}).animate({opacity: 1}, this.options.fadeDuration);
-      } else {
-        this.$elm.css('display', 'inline-block');
+        this.$elm.css({opacity: 0}).animate({opacity: 1}, this.options.fadeDuration);
       }
       this.$elm.trigger($.modal.OPEN, [this._ctx()]);
     },
@@ -155,16 +153,17 @@
       this.$elm.trigger($.modal.BEFORE_CLOSE, [this._ctx()]);
       if (this.closeButton) this.closeButton.remove();
       var _this = this;
+      this.$elm.trigger($.modal.CLOSE, [this._ctx()]);
       if(this.options.doFade) {
         this.$elm.fadeOut(this.options.fadeDuration, function () {
+          _this.$elm.removeClass(_this.options.modalClass + '-visible');
+          _this.$elm.css({opacity: '', display: ''});  // cleanup after $elm.fadeOut - next time it might be shown without a fade
           _this.$elm.trigger($.modal.AFTER_CLOSE, [_this._ctx()]);
         });
       } else {
-        this.$elm.hide(0, function () {
-          _this.$elm.trigger($.modal.AFTER_CLOSE, [_this._ctx()]);
-        });
+        this.$elm.removeClass(this.options.modalClass + '-visible');
+        this.$elm.trigger($.modal.AFTER_CLOSE, [this._ctx()]);
       }
-      this.$elm.trigger($.modal.CLOSE, [this._ctx()]);
     },
 
     showSpinner: function() {
